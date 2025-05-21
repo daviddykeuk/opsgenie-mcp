@@ -19,20 +19,12 @@ It connects to the OpsGenie API and provides a structured interface for AI assis
 - npm
 - An OpsGenie API key
 
-## Installation
-
-### Option 1: From npm (recommended)
-
-```bash
-npm install -g opsgenie-mcp
-```
-
-### Option 2: From source
+## Usage
 
 #### 1. Clone the repository
 
 ```bash
-git clone https://github.com/your-username/opsgenie-mcp.git
+git clone https://github.com/daviddykeuk/opsgenie-mcp.git
 cd opsgenie-mcp
 ```
 
@@ -42,36 +34,25 @@ cd opsgenie-mcp
 npm install
 ```
 
-#### 3. Build the project
-
-```bash
-npm run build
+### 3. Add the server to your client
+```json
+{
+  "mcpServers": {
+    // ... existing servers in here
+    "opsgenie": {
+      "command": "node",
+      "args": [
+          "/path/to/cloned/opsgenie-mcp/build/index.js"
+      ],
+      "env": {
+        "OPSGENIE_API_KEY": "xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxx",
+        "OPSGENIE_USER": "John Tracy"  // Optional
+      }
+    }
+  }
+}
 ```
 
-## Usage
-
-### 1. Set your OpsGenie API key
-
-```bash
-export OPSGENIE_API_KEY=your-api-key-here
-export OPSGENIE_USER=your-username  # Optional: used to attribute notes to a specific user
-```
-
-### 2. Run the server
-
-If installed from npm:
-```bash
-opsgenie-mcp
-```
-
-If installed from source:
-```bash
-node build/index.js
-```
-
-### 3. Connect to the server
-
-The server runs on stdio, which means it can be used directly by AI assistants that support MCP.
 
 ## Project Structure
 
