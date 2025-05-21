@@ -1,6 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import axios from "axios";
+import { opsgenieGet, createErrorResponse, createSuccessResponse } from "../../utils/api.js";
 
 interface OpsgenieOnCallResponse {
   data: any;
@@ -14,45 +14,27 @@ export const registerTool = (server: McpServer) => {
       scheduleIdentifier: z.string().optional().describe("Identifier of the schedule (optional)"),
     },
     async ({ scheduleIdentifier }) => {
-      const apiKey = process.env.OPSGENIE_API_KEY;
-      if (!apiKey) {
-        return {
-          isError: true,
-          content: [
-            {
-              type: "text",
-              text: "Opsgenie API key is not set in the environment variable OPSGENIE_API_KEY.",
-            },
-          ],
-        };
-      }
-
       try {
-        // Construct the URL based on whether a schedule identifier is provided
-        let url = "https://api.opsgenie.com/v2/schedules/on-calls";
+        // Construct the endpoint based on whether a schedule identifier is provided
+        let endpoint = "/schedules/on-calls";
         let params: Record<string, string> = { flat: "false" };
         
         // If a specific schedule identifier is provided
         if (scheduleIdentifier) {
-          url = `https://api.opsgenie.com/v2/schedules/${scheduleIdentifier}/on-calls`;
+          endpoint = `/schedules/${scheduleIdentifier}/on-calls`;
           params = {
             ...params,
             scheduleIdentifierType: "name",
           };
         }
 
-        const response = await axios.get<OpsgenieOnCallResponse>(url, {
-          headers: {
-            Authorization: `GenieKey ${apiKey}`,
-          },
-          params,
-        });
-
+        const response = await opsgenieGet<OpsgenieOnCallResponse>(endpoint, params);
+        
         return {
           content: [{
             type: "text",
-            text: JSON.stringify(response.data.data)
-          }],
+            text: JSON.stringify(response.data)
+          }]
         };
       } catch (error: any) {
         return {

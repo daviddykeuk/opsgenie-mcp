@@ -1,6 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import axios from "axios";
+import { opsgenieGet } from "../../utils/api.js";
 
 interface OpsgenieNextOnCallResponse {
   data: any;
@@ -14,19 +14,6 @@ export const registerTool = (server: McpServer) => {
       scheduleIdentifier: z.string().optional().describe("Identifier of the schedule (optional)"),
     },
     async ({ scheduleIdentifier }) => {
-      const apiKey = process.env.OPSGENIE_API_KEY;
-      if (!apiKey) {
-        return {
-          isError: true,
-          content: [
-            {
-              type: "text",
-              text: "Opsgenie API key is not set in the environment variable OPSGENIE_API_KEY.",
-            },
-          ],
-        };
-      }
-
       try {
         // We need a schedule identifier for the next-on-calls endpoint
         if (!scheduleIdentifier) {
@@ -41,25 +28,20 @@ export const registerTool = (server: McpServer) => {
           };
         }
 
-        // Construct the URL for next-on-calls
-        const url = `https://api.opsgenie.com/v2/schedules/${scheduleIdentifier}/next-on-calls`;
+        // Construct the endpoint for next-on-calls
+        const endpoint = `/schedules/${scheduleIdentifier}/next-on-calls`;
         const params: Record<string, string> = { 
           flat: "false",
           scheduleIdentifierType: "name"
         };
         
-        const response = await axios.get<OpsgenieNextOnCallResponse>(url, {
-          headers: {
-            Authorization: `GenieKey ${apiKey}`,
-          },
-          params,
-        });
-
+        const response = await opsgenieGet<OpsgenieNextOnCallResponse>(endpoint, params);
+        
         return {
           content: [{
             type: "text",
-            text: JSON.stringify(response.data.data)
-          }],
+            text: JSON.stringify(response.data)
+          }]
         };
       } catch (error: any) {
         return {
