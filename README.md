@@ -21,20 +21,28 @@ It connects to the OpsGenie API and provides a structured interface for AI assis
 
 ## Installation
 
-### 1. Clone the repository
+### Option 1: From npm (recommended)
+
+```bash
+npm install -g opsgenie-mcp
+```
+
+### Option 2: From source
+
+#### 1. Clone the repository
 
 ```bash
 git clone https://github.com/your-username/opsgenie-mcp.git
 cd opsgenie-mcp
 ```
 
-### 2. Install dependencies
+#### 2. Install dependencies
 
 ```bash
 npm install
 ```
 
-### 3. Build the project
+#### 3. Build the project
 
 ```bash
 npm run build
@@ -51,6 +59,12 @@ export OPSGENIE_USER=your-username  # Optional: used to attribute notes to a spe
 
 ### 2. Run the server
 
+If installed from npm:
+```bash
+opsgenie-mcp
+```
+
+If installed from source:
 ```bash
 node build/index.js
 ```
@@ -69,7 +83,7 @@ The project follows a modular directory structure:
   └── /tools/                   # All MCP tools
       ├── index.ts              # Tools export file
       ├── README.md             # Tools documentation
-      ├── TEMPLATE.ts           # Template for new tools
+      ├── /templates/           # Template for new tools
       ├── /listAlerts/          # List all alerts tool
       ├── /listOpenAlerts/      # List open alerts tool
       ├── /getAlert/            # Get alert details tool
@@ -120,6 +134,37 @@ To add new tools to this MCP server, follow the documentation in:
 - `src/tools/TEMPLATE.ts`: Starter template for new tool implementations
 
 These resources provide step-by-step instructions and best practices for extending the OpsGenie MCP server with additional functionality.
+
+## Creating Releases
+
+This project uses GitHub Actions to automate the release process, including version bumping, tagging, creating a GitHub release, and publishing to npm.
+
+To create a new release:
+
+1. Go to the GitHub repository
+2. Navigate to the "Actions" tab
+3. Select the "Create Release and Publish" workflow
+4. Click "Run workflow"
+5. Choose the release type:
+   - `patch` for bug fixes (1.0.0 → 1.0.1)
+   - `minor` for new features (1.0.0 → 1.1.0)
+   - `major` for breaking changes (1.0.0 → 2.0.0)
+6. Click "Run workflow" to start the process
+
+The workflow will:
+- Update the version in package.json
+- Create a new git tag
+- Generate a GitHub release with release notes
+- Publish the package to npm
+
+### Required Secrets
+
+For the workflow to function properly, you need to add an NPM_TOKEN secret to your GitHub repository:
+
+1. Generate an npm access token with publish permissions
+2. Go to your GitHub repository → Settings → Secrets → New repository secret
+3. Name: `NPM_TOKEN`
+4. Value: your npm access token
 
 ## Note on OpsGenie Sunsetting
 
