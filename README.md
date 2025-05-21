@@ -10,6 +10,8 @@ This MCP server provides tools for AI assistants to:
 - List only open OpsGenie alerts
 - Get details of a specific alert
 - Add notes to existing alerts
+- Check who is currently on-call
+- Check who is next on-call
 
 It connects to the OpsGenie API and provides a structured interface for AI assistants to query your alerts.
 
@@ -68,7 +70,9 @@ The project follows a modular directory structure:
       ├── /listAlerts/          # List all alerts tool
       ├── /listOpenAlerts/      # List open alerts tool
       ├── /getAlert/            # Get alert details tool
-      └── /addNote/             # Add note to alert tool
+      ├── /addNote/             # Add note to alert tool
+      ├── /getOnCall/           # Get current on-call participants tool
+      └── /getNextOnCall/       # Get next on-call participants tool
 ```
 
 Each tool is contained in its own directory, making the codebase more maintainable and easier to navigate.
@@ -106,6 +110,20 @@ Parameters:
 
 Environment Variables:
 - `OPSGENIE_USER` (optional): Username to be recorded as the note author
+
+### `getOnCall`
+
+Get current on-call participants from a specific schedule.
+
+Parameters:
+- `scheduleIdentifier` (optional): Name of the schedule to get on-call participants for. If not provided, gets all schedules.
+
+### `getNextOnCall`
+
+Get next on-call participants from a specific schedule.
+
+Parameters:
+- `scheduleIdentifier` (required): Name of the schedule to get next on-call participants for.
 
 ## Extending with New Tools
 

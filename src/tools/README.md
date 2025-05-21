@@ -17,7 +17,11 @@ The tools are organized into a modular directory structure:
   │   └── index.ts  
   ├── /getAlert/           # Get alert details tool
   │   └── index.ts
-  └── /addNote/            # Add note to alert tool
+  ├── /addNote/            # Add note to alert tool
+  │   └── index.ts
+  ├── /getOnCall/          # Get current on-call participants tool
+  │   └── index.ts
+  └── /getNextOnCall/      # Get next on-call participants tool
       └── index.ts
 ```
 
@@ -27,6 +31,8 @@ The tools are organized into a modular directory structure:
 - `listOpenAlerts`: List open alerts from OpsGenie, sorted by when they last occurred
 - `getAlert`: Get detailed information about a specific alert
 - `addNote`: Add a note to an existing alert (uses OPSGENIE_USER environment variable if set)
+- `getOnCall`: Get current on-call participants from OpsGenie schedules
+- `getNextOnCall`: Get next on-call participants from OpsGenie schedules
 
 ## Adding a New Tool
 
