@@ -5,9 +5,12 @@ import axios from "axios";
 export const registerTool = (server: McpServer) => {
     server.tool(
         "listOpenAlerts",
-        "List open Opsgenie alerts in descending order of when they last occurred",
-        { limit: z.number().min(1).max(100).optional() },
-        async ({ limit }) => {
+        "List open Opsgenie alerts in descending order of when they last occurred, use the message parameter to filter by message. The string will only match if it the start of the message or the string appears after a space (this is an OpsGenie limitation).",
+        { 
+          limit: z.number().min(1).max(100).optional(),
+          message: z.string().optional(),
+        },
+        async ({ limit, message }) => {
           const apiKey = process.env.OPSGENIE_API_KEY;
           if (!apiKey) {
             return {
@@ -25,7 +28,7 @@ export const registerTool = (server: McpServer) => {
           }
           const url = "https://api.opsgenie.com/v2/alerts";
           const params = { 
-            query: "status:open",
+            query: `status: open${message ? ` message: ${message}*` : ""}`,
             sort: "lastOccurredAt",
             order: "desc",
             ...(limit ? { limit } : {})
