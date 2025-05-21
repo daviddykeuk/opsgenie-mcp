@@ -11,6 +11,16 @@
   "files": [
     "build"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/daviddykeuk/opsgenie-mcp.git"
+  },
+  "homepage": "https://github.com/daviddykeuk/opsgenie-mcp#readme",
+  "bugs": {
+    "url": "https://github.com/daviddykeuk/opsgenie-mcp/issues"
+  },
+  "author": "David Dyke",
+  "license": "MIT",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.11.4",
     "@types/axios": "^0.9.36",

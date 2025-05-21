@@ -6,8 +6,11 @@ export const registerTool = (server: McpServer) => {
   server.tool(
     "listAlerts",
     "List Opsgenie alerts",
-    { limit: z.number().min(1).max(100).optional() },
-    async ({ limit }) => {
+    {
+      limit: z.number().min(1).max(100).optional(),
+      message: z.string().optional(),
+    },
+    async ({ limit, message }) => {
       const apiKey = process.env.OPSGENIE_API_KEY;
       if (!apiKey) {
         return {
@@ -24,7 +27,12 @@ export const registerTool = (server: McpServer) => {
         };
       }
       const url = "https://api.opsgenie.com/v2/alerts";
-      const params = limit ? { limit } : {};
+      const params = {
+        query: message ? `message:${message}*` : "",
+        sort: "lastOccurredAt",
+        order: "desc",
+        ...(limit ? { limit } : {})
+      };
       const response = await axios.get(url, {
         headers: {
           Authorization: `GenieKey ${apiKey}`,
