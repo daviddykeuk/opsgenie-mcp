@@ -1,6 +1,10 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import axios from "axios";
+import { opsgenieGet } from "../../utils/api.js";
+
+interface OpsgenieAlertsResponse {
+  data: any[];
+}
 
 export const registerTool = (server: McpServer) => {
     server.tool(
@@ -11,8 +15,26 @@ export const registerTool = (server: McpServer) => {
           message: z.string().optional(),
         },
         async ({ limit, message }) => {
-          const apiKey = process.env.OPSGENIE_API_KEY;
-          if (!apiKey) {
+          try {
+            const params: Record<string, string | number> = { 
+              query: `status: open${message ? ` message: ${message}*` : ""}`,
+              sort: "lastOccurredAt",
+              order: "desc"
+            };
+            
+            if (limit) {
+              params.limit = limit;
+            }
+            
+            const response = await opsgenieGet<OpsgenieAlertsResponse>("/alerts", params);
+            
+            return {
+              content: [{
+                type: "text",
+                text: JSON.stringify(response.data)
+              }],
+            };
+          } catch (error: any) {
             return {
               structuredContent: {
                 alerts: [],
@@ -21,33 +43,11 @@ export const registerTool = (server: McpServer) => {
               content: [
                 {
                   type: "text",
-                  text: "Opsgenie API key is not set in the environment variable OPSGENIE_API_KEY.",
+                  text: `Error: ${error.response?.data?.message || error.message}`,
                 },
               ],
             };
           }
-          const url = "https://api.opsgenie.com/v2/alerts";
-          const params = { 
-            query: `status: open${message ? ` message: ${message}*` : ""}`,
-            sort: "lastOccurredAt",
-            order: "desc",
-            ...(limit ? { limit } : {})
-          };
-          
-          const response = await axios.get(url, {
-            headers: {
-              Authorization: `GenieKey ${apiKey}`,
-            },
-            params,
-          });
-          
-          const data = response.data as { data: any[] };
-          return {
-            content: [{
-              type: "text",
-              text: JSON.stringify(data.data)
-            }],
-          };
         }
       );
 };
