@@ -28,7 +28,7 @@ export const registerTool = (server: McpServer) => {
       }
       const url = "https://api.opsgenie.com/v2/alerts";
       const params = {
-        query: message ? "message:${message}*" : "",
+        query: message ? `message:${message}*` : "",
         sort: "lastOccurredAt",
         order: "desc",
         ...(limit ? { limit } : {})
