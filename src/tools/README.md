@@ -17,7 +17,11 @@ The tools are organized into a modular directory structure:
   │   └── index.ts  
   ├── /getAlert/           # Get alert details tool
   │   └── index.ts
-  └── /addNote/            # Add note to alert tool
+  ├── /addNote/            # Add note to alert tool
+  │   └── index.ts
+  ├── /getOnCall/          # Get current on-call participants tool
+  │   └── index.ts
+  └── /getNextOnCall/      # Get next on-call participants tool
       └── index.ts
 ```
 
@@ -27,6 +31,8 @@ The tools are organized into a modular directory structure:
 - `listOpenAlerts`: List open alerts from OpsGenie, sorted by when they last occurred
 - `getAlert`: Get detailed information about a specific alert
 - `addNote`: Add a note to an existing alert (uses OPSGENIE_USER environment variable if set)
+- `getOnCall`: Get current on-call participants from OpsGenie schedules
+- `getNextOnCall`: Get next on-call participants from OpsGenie schedules
 
 ## Adding a New Tool
 
@@ -49,7 +55,11 @@ Create an `index.ts` file in your new tool directory using the TEMPLATE.ts as a 
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import axios from "axios";
+import { opsgenieGet, opsgeniePost } from "../../utils/api.js";
+
+interface OpsgenieResponse {
+  data: any; // Replace with your specific response structure
+}
 
 export const registerTool = (server: McpServer) => {
   server.tool(
@@ -61,39 +71,30 @@ export const registerTool = (server: McpServer) => {
       paramName2: z.number().min(1).max(100).optional().describe("Optional parameter description"),
     },
     async ({ paramName1, paramName2 }) => {
-      // Get API key
-      const apiKey = process.env.OPSGENIE_API_KEY;
-      if (!apiKey) {
-        return {
-          isError: true,
-          content: [
-            {
-              type: "text",
-              text: "Opsgenie API key is not set in the environment variable OPSGENIE_API_KEY.",
-            },
-          ],
-        };
-      }
-
-      // Implement API call logic
       try {
-        // Make API request
-        const response = await axios.post(
-          "https://api.opsgenie.com/v2/your-endpoint",
-          { /* request data */ },
-          {
-            headers: {
-              Authorization: `GenieKey ${apiKey}`,
-              "Content-Type": "application/json",
-            },
-          }
+        // For GET requests
+        // const params: Record<string, string | number> = {};
+        // if (paramName2) {
+        //   params.someParam = paramName2;
+        // }
+        // const response = await opsgenieGet<OpsgenieResponse>("/endpoint-path", params);
+        
+        // For POST requests
+        const requestBody = {
+          key1: paramName1,
+          // Add more fields as needed
+        };
+        
+        const response = await opsgeniePost<OpsgenieResponse>(
+          "/endpoint-path",
+          requestBody
         );
-
+        
         // Return success response
         return {
           content: [{
             type: "text",
-            text: JSON.stringify(response.data.data)
+            text: JSON.stringify(response.data)
           }],
         };
       } catch (error: any) {
