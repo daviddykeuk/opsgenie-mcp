@@ -11,17 +11,20 @@ export const registerTool = (server: McpServer) => {
     "getOnCall",
     "Get current on-call participants from Opsgenie schedules",
     {
-      scheduleIdentifier: z.string().optional().describe("Identifier of the schedule (optional)"),
+      scheduleIdentifier: z.string().optional().describe("Identifier of the schedule (uses OPSGENIE_SCHEDULE environment variable if not provided)"),
     },
     async ({ scheduleIdentifier }) => {
       try {
+        // Use the provided identifier or the environment variable
+        const schedule = scheduleIdentifier || process.env.OPSGENIE_SCHEDULE;
+        
         // Construct the endpoint based on whether a schedule identifier is provided
         let endpoint = "/schedules/on-calls";
         let params: Record<string, string> = { flat: "false" };
         
         // If a specific schedule identifier is provided
-        if (scheduleIdentifier) {
-          endpoint = `/schedules/${scheduleIdentifier}/on-calls`;
+        if (schedule) {
+          endpoint = `/schedules/${schedule}/on-calls`;
           params = {
             ...params,
             scheduleIdentifierType: "name",
