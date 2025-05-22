@@ -48,7 +48,9 @@ npm install
       ],
       "env": {
         "OPSGENIE_API_KEY": "xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxx",
-        "OPSGENIE_USER": "John Tracy"  // Optional
+        "OPSGENIE_USER": "John Tracy",  // Optional for addNote tool
+        "OPSGENIE_USER_EMAIL": "john@internationalresuce.com",  // Required for createOverride tool
+        "OPSGENIE_SCHEDULE": "International Rescue on-call"  // Optional: Default schedule name for on-call tools
       }
     }
   }
@@ -116,14 +118,27 @@ Environment Variables:
 Get current on-call participants from a specific schedule.
 
 Parameters:
-- `scheduleIdentifier` (optional): Name of the schedule to get on-call participants for. If not provided, gets all schedules.
+- `scheduleIdentifier` (optional): Name of the schedule to get on-call participants for. If not provided, uses OPSGENIE_SCHEDULE environment variable or gets all schedules.
 
 ### `getNextOnCall`
 
 Get next on-call participants from a specific schedule.
 
 Parameters:
-- `scheduleIdentifier` (required): Name of the schedule to get next on-call participants for.
+- `scheduleIdentifier` (optional): Name of the schedule to get next on-call participants for. If not provided, uses OPSGENIE_SCHEDULE environment variable.
+
+### `createOverride`
+
+Create a schedule override to take on-call responsibility for a period of time.
+
+Parameters:
+- `scheduleIdentifier` (optional): Name of the schedule to override. If not provided, uses OPSGENIE_SCHEDULE environment variable.
+- `startDate` (required): Start time for the override in ISO format (e.g. 2023-05-22T12:00:00Z)
+- `endDate` (required): End time for the override in ISO format (e.g. 2023-05-22T13:00:00Z)
+
+Environment Variables:
+- `OPSGENIE_USER_EMAIL` (required): Email address of the user taking on-call responsibility
+- `OPSGENIE_SCHEDULE` (optional): Default schedule name to use if scheduleIdentifier is not provided
 
 ## Extending with New Tools
 
