@@ -49,7 +49,7 @@ npm install
       "env": {
         "OPSGENIE_API_KEY": "xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxx",
         "OPSGENIE_USER": "John Tracy",  // Optional for addNote tool
-        "OPSGENIE_USER_EMAIL": "john@internationalresuce.com",  // Required for createOverride tool
+        "OPSGENIE_USER_EMAIL": "john@internationalrescue.com",  // Required for createOverride tool
         "OPSGENIE_SCHEDULE": "International Rescue on-call"  // Optional: Default schedule name for on-call tools
       }
     }
