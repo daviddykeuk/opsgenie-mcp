@@ -7,7 +7,8 @@ import {
     registerListOpenAlertsTool,
     registerAddNoteTool,
     registerGetOnCallTool,
-    registerGetNextOnCallTool
+    registerGetNextOnCallTool,
+    registerCreateOverrideTool
 } from "./tools/index.js";
 
 // Create server instance
@@ -22,6 +23,7 @@ registerGetAlertTool(server);
 registerAddNoteTool(server);
 registerGetOnCallTool(server);
 registerGetNextOnCallTool(server);
+registerCreateOverrideTool(server);
 
 async function main() {
   const transport = new StdioServerTransport();

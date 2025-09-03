@@ -23,6 +23,8 @@ The tools are organized into a modular directory structure:
   │   └── index.ts
   └── /getNextOnCall/      # Get next on-call participants tool
       └── index.ts
+  └── /createOverride/     # Create on-call override tool
+      └── index.ts
 ```
 
 ## Available Tools
@@ -31,8 +33,18 @@ The tools are organized into a modular directory structure:
 - `listOpenAlerts`: List open alerts from OpsGenie, sorted by when they last occurred
 - `getAlert`: Get detailed information about a specific alert
 - `addNote`: Add a note to an existing alert (uses OPSGENIE_USER environment variable if set)
-- `getOnCall`: Get current on-call participants from OpsGenie schedules
-- `getNextOnCall`: Get next on-call participants from OpsGenie schedules
+- `getOnCall`: Get current on-call participants from OpsGenie schedules (uses OPSGENIE_SCHEDULE environment variable if no schedule is specified)
+- `getNextOnCall`: Get next on-call participants from OpsGenie schedules (uses OPSGENIE_SCHEDULE environment variable if no schedule is specified)
+- `createOverride`: Create a schedule override to take on-call responsibility for a period of time (uses OPSGENIE_SCHEDULE and OPSGENIE_USER_EMAIL environment variables)
+
+## Environment Variables
+
+The following environment variables can be used with these tools:
+
+- `OPSGENIE_API_KEY`: (Required) Your OpsGenie API key
+- `OPSGENIE_USER`: (Optional) Username to be recorded as the note author for the `addNote` tool
+- `OPSGENIE_USER_EMAIL`: (Required for `createOverride`) Email address of the user taking on-call responsibility
+- `OPSGENIE_SCHEDULE`: (Optional) Default schedule name to use for on-call related tools
 
 ## Adding a New Tool
 
